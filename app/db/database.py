@@ -1,10 +1,11 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-import os
+from app.config import settings
 
-DB_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./apollonft.db")
+# Strip query params (sslmode, channel_binding, etc.) — asyncpg uses connect_args instead
+_db_url = settings.database_url.split("?")[0].replace("postgresql://", "postgresql+asyncpg://", 1)
 
-engine = create_async_engine(DB_URL, echo=False)
+engine = create_async_engine(_db_url, echo=False, connect_args={"ssl": "require"})
 SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 

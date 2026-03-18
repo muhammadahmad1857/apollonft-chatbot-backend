@@ -6,6 +6,7 @@ from app.routers.voice import router as voice_router
 from app.routers.transcribe import router as transcribe_router
 from app.routers.users import router as users_router
 from app.routers.nft import router as nft_router
+from app.routers.ipfs import router as ipfs_router
 from app.db.database import create_tables
 
 
@@ -35,6 +36,7 @@ app.include_router(voice_router)
 app.include_router(transcribe_router)
 app.include_router(users_router)
 app.include_router(nft_router)
+app.include_router(ipfs_router)
 
 
 @app.get("/health")

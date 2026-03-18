@@ -60,6 +60,24 @@ async def confirm_nft(req: NFTConfirmRequest, db: AsyncSession = Depends(get_db)
     return {"ok": True, "nft_id": nft.id}
 
 
+@router.get("/my-nfts")
+async def get_my_nfts(wallet: str, db: AsyncSession = Depends(get_db)):
+    """Return all NFTs owned by a wallet address."""
+    nfts = await crud.get_user_nfts(db, wallet.lower())
+    return [
+        {
+            "token_id": nft.token_id,
+            "token_uri": nft.token_uri,
+            "royalty_bps": nft.royalty_bps,
+            "status": nft.status,
+            "listing_price_wei": nft.listing_price_wei,
+            "auction_min_bid_wei": nft.auction_min_bid_wei,
+            "tx_hash": nft.tx_hash,
+        }
+        for nft in nfts
+    ]
+
+
 async def _fetch_metadata_text(token_uri: str, token_id: int) -> str:
     """Fetch NFT metadata JSON and convert to embeddable text."""
     try:
